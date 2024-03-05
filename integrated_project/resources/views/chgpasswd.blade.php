@@ -3,10 +3,8 @@
 @section('title', 'Seneca')
 
 @section('content')
-<!-- [ Main Content ] start -->
 <div class="pc-container">
     <div class="pc-content">
-        <!-- [ breadcrumb ] start -->
         <div class="page-header">
             <div class="page-block">
                 <div class="row align-items-center">
@@ -18,11 +16,7 @@
                 </div>
             </div>
         </div>
-        <!-- [ breadcrumb ] end -->
-
-        <!-- [ Main Content ] start -->
         <div class="row">
-            <!-- [ sample-page ] start -->
             <div class="col-sm-12">
                 <div class="tab-content">
                     <div class="tab-pane show active" id="profile-4" role="tabpanel" aria-labelledby="profile-tab-4">
@@ -68,12 +62,9 @@
                     </div>
                 </div>
             </div>
-            <!-- [ sample-page ] end -->
         </div>
-        <!-- [ Main Content ] end -->
     </div>
 </div>
-<!-- [ Main Content ] end -->
 <footer class="pc-footer">
     <div class="footer-wrapper container-fluid">
         <div class="row">

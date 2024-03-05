@@ -28,6 +28,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive dt-responsive">
+                        <!-- Si hay lecciones -->
                         @if ($lecciones->isNotEmpty())
                         <table id="new-cons" class="display table table-striped table-hover dt-responsive nowrap" style="width: 100%">
                             <thead>
@@ -41,8 +42,10 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <!-- Itera sobre las lecciones -->
                                 @foreach ($lecciones as $leccion)
                                 @auth
+                                <!-- Si el usuario es un profesor -->
                                 @if(auth()->user()->roles->contains('id', 3) && $leccion->grupo->curso_escolar == '2023-2024')
                                     <tr>
                                         <td>
@@ -93,6 +96,7 @@
                                     @endif
                                 @endguest
                                 @auth
+                                <!-- Si el usuario es un administrador o un coordinador -->
                                 @if(auth()->user()->roles->contains('id', 1) || auth()->user()->roles->contains('id', 2))
                                     <tr>
                                         <td>
@@ -120,6 +124,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <!-- Si no hay lecciones -->
                         @elseif($lecciones->isEmpty() && $search != '')
                         <table id="dom-jqry" class="table table-striped table-bordered nowrap">
                             <thead>
@@ -148,6 +153,7 @@
                         <div id="dom-jqry_wrapper" class="dataTables_wrapper dt-bootstrap5">
                             <div class="row pagination-center">
                                 <div class="col-sm-12 col-md-11">
+                                    <!-- Muestra la paginación -->
                                     {{$lecciones->links()}}
                                 </div>
                             </div>

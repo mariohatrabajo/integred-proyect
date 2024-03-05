@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Livewire;
+
 use App\Models\Profesor;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -19,7 +20,8 @@ class ProfesorTable extends Component
     /**
      * Es un hook de iniciación de la página web con todos los atributos a null, para evitar problemas de iniciación.
      */
-    public function mount(){
+    public function mount()
+    {
         $this->usu_seneca = null;
         $this->nombre = null;
         $this->apellido1 = null;
@@ -34,27 +36,48 @@ class ProfesorTable extends Component
     public  $sortDirection = 'ASC'; /*Valor por defecto de la dirección de la tabla*/
     public  $sortColumn = 'usu_seneca'; /*Valor por defecto de la dirección de la tabla*/
 
-
-    public function doSort($column){
-        if($this->sortColumn === $column){
-            $this->sortDirection =($this->sortDirection == 'ASC') ? 'DESC' : 'ASC';
+    /**
+     * Realiza la ordenación de la tabla según la columna especificada.
+     *
+     * @param string $column Columna por la cual se realizará la ordenación.
+     */
+    public function doSort($column)
+    {
+        // Verifica si la columna de ordenación actual es la misma que la nueva
+        if ($this->sortColumn === $column) {
+            // Cambia la dirección de la ordenación si la dirección actual es 'ASC', de lo contrario, la establece en 'ASC'
+            $this->sortDirection = ($this->sortDirection == 'ASC') ? 'DESC' : 'ASC';
             return;
         }
+
+        // Establece la nueva columna de ordenación y la dirección como 'ASC'
         $this->sortColumn = $column;
-        $this -> sortDirection = 'ASC';
+        $this->sortDirection = 'ASC';
     }
 
     // Life cycle hooks
-    public function updatedPerPage(){
+    /**
+     * Hook del ciclo de vida: Se ejecuta cuando se actualiza el número de elementos por página.
+     * Reinicia la página a la primera cuando se modifica el número de elementos por página.
+     */
+    public function updatedPerPage()
+    {
         $this->resetPage();
     }
 
-    public function updatedSearch(){
+    /**
+     * Hook del ciclo de vida: Se ejecuta cuando se actualiza el término de búsqueda.
+     * Reinicia la página a la primera cuando se realiza una nueva búsqueda.
+     */
+    public function updatedSearch()
+    {
         $this->resetPage();
     }
 
-     /**
-     * Renderizamos la página con todos los datos
+    /**
+     * Renderiza la página con todos los datos de profesores ordenados y paginados.
+     *
+     * @return \Illuminate\View\View
      */
     public function render()
     {
@@ -65,10 +88,12 @@ class ProfesorTable extends Component
         //     ->orWhere('especialidad', 'like', '%' . $this->search . '%')
         //     ->get();
 
+        // Obtiene los datos de profesores con la búsqueda y ordenación aplicadas, y los paginan según el número especificado por página.
         $teachers = Profesor::search($this->search)
-        ->orderBy($this->sortColumn, $this->sortDirection)
-        ->paginate($this->perPage);
+            ->orderBy($this->sortColumn, $this->sortDirection)
+            ->paginate($this->perPage);
 
+        // Retorna la vista 'livewire.profesor-table' con los datos de profesores paginados.
         return view('livewire.profesor-table', compact('teachers'));
     }
 
@@ -79,8 +104,9 @@ class ProfesorTable extends Component
      * Si esta es null, quiere decir que se va a crear un nuevo registro, en caso de que sea distinto a null es que se va a
      * editar un registro, por lo tanto inicializamos todas nuestras variables con los datos de la BD.
      */
-    public function modal($profesor_id = null){
-        if($profesor_id != null){
+    public function modal($profesor_id = null)
+    {
+        if ($profesor_id != null) {
             $this->accion = 'Edit';
 
             $this->profesor = Profesor::findOrFail($profesor_id);
@@ -89,7 +115,7 @@ class ProfesorTable extends Component
             $this->apellido1 = $this->profesor->apellido1;
             $this->apellido2 = $this->profesor->apellido2;
             $this->especialidad = $this->profesor->especialidad;
-        }else{
+        } else {
             $this->accion = 'Create';
 
             $profesor = $this->profesor;
@@ -106,7 +132,8 @@ class ProfesorTable extends Component
      *
      * Resetamos todas las variables con el hook de renderizado de la web y cerramos la ventana con un scrip.
      */
-    public function save(){
+    public function save()
+    {
         $this->validate($this->rules());
 
         $profesor = $this->profesor;
@@ -126,11 +153,12 @@ class ProfesorTable extends Component
      * sacamos todas las lecciones que tiene ese grupo y si la variable lecciones es distinta de null
      * las recorremos una a una y las vamos borrando, una vez eliminado todo eliminamos el profesor.
      */
-    public function delete($profesor_id){
+    public function delete($profesor_id)
+    {
         $profesor = Profesor::findOrFail($profesor_id);
         $lecciones = $profesor->lecciones;
-        if($lecciones != null){
-            foreach($lecciones as $leccion){
+        if ($lecciones != null) {
+            foreach ($lecciones as $leccion) {
                 $leccion->delete();
             }
         }
@@ -138,18 +166,19 @@ class ProfesorTable extends Component
     }
 
 
-     /**
+    /**
      * Metodo de validación cuando el usuario hace UPDATE.
      *
      * Se llama con $this->validate(), porque queremos validar los atributos de este componente
      * que son los que el usuario modifica en el form.
      */
-    public function rules(){
+    public function rules()
+    {
         return [
-            'usu_seneca'=>[
+            'usu_seneca' => [
                 'required',
             ],
-            'nombre'=>[
+            'nombre' => [
                 'required',
                 'max:30',
                 'min:3',
@@ -161,13 +190,13 @@ class ProfesorTable extends Component
                 'min:3',
                 'alpha:ascii',
             ],
-            'apellido2'=>[
+            'apellido2' => [
                 'required',
                 'max:50',
                 'min:3',
                 'alpha:ascii',
             ],
-            'especialidad'=>[
+            'especialidad' => [
                 'required',
                 'regex:/^(secundaria|formacion profesional)$/i',
             ],

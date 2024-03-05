@@ -24,7 +24,14 @@ class Profesor extends Model
         return $this->hasMany(Leccion::class);
     }
 
-    public function scopeSearch($query, $value){
+    /**
+     * Alcance de Eloquent para la búsqueda en la tabla de profesores basada en varias columnas.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $value El valor de búsqueda para comparar con varias columnas.
+     */
+    public function scopeSearch($query, $value)
+    {
         $query->where('nombre', 'like', '%' . $value . '%')
             ->orWhere('apellido1', 'like', '%' . $value . '%')
             ->orWhere('apellido2', 'like', '%' . $value . '%')

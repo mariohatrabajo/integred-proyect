@@ -32,15 +32,25 @@ class Leccion extends Model
         return $this->belongsTo(Grupo::class);
     }
 
-    public function scopeSearch($query, $value){
+    /**
+     * Alcance de Eloquent para la búsqueda en la tabla "leccions" y sus relaciones asociadas.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $value El valor de búsqueda para comparar con varias columnas.
+     */
+    public function scopeSearch($query, $value)
+    {
         return $query->where('leccions.horas', 'like', '%' . $value . '%')
             ->orWhereHas('profesor', function ($query) use ($value) {
+                // Utiliza una cláusula WHERE para buscar en la relación "profesor" basada en la columna "nombre".
                 $query->where('profesors.nombre', 'like', '%' . $value . '%');
             })
             ->orWhereHas('modulo', function ($query) use ($value) {
+                // Utiliza una cláusula WHERE para buscar en la relación "modulo" basada en la columna "denominacion".
                 $query->where('modulos.denominacion', 'like', '%' . $value . '%');
             })
             ->orWhereHas('grupo', function ($query) use ($value) {
+                // Utiliza una cláusula WHERE para buscar en la relación "grupo" basada en la columna "denominacion".
                 $query->where('grupos.denominacion', 'like', '%' . $value . '%');
             });
     }

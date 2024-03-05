@@ -115,6 +115,7 @@
                             </div>
                             <br>
                             @auth
+                            <!-- comprobamos si el usuario tiene el rol de administrador -->
                             @if(auth()->user()->roles->contains('id', 1))
                             <div class="row">
                                 <div class="col-sm-12 col-md-12">
@@ -131,6 +132,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive dt-responsive">
+                        <!-- Si hay módulos -->
                         @if ($modulos->isNotEmpty())
                         <table id="new-cons" class="display table table-striped table-hover dt-responsive nowrap" style="width: 100%">
                             <thead>
@@ -142,6 +144,7 @@
                                     <th wire:click="doSort('horas')" class="column-tables"><x-datatable-item :sortColumn="$sortColumn" :sortDirection="$sortDirection" columnNameVar="horas" columnName="{!! trans('integrated.modules_page.hours')!!}" /></th>
                                     <th wire:click="doSort('formacion_siglas')" class="column-tables"><x-datatable-item :sortColumn="$sortColumn" :sortDirection="$sortDirection" columnNameVar="formacion_siglas" columnName="{!! trans('integrated.modules_page.formation')!!}" /></th>
                                     @auth
+                                    <!-- comprobamos si el usuario tiene el rol de administrador -->
                                     @if(auth()->user()->roles->contains('id', 1))
                                     <th>   {{trans('integrated.modules_page.actions')}}</th>
                                     @endif
@@ -149,6 +152,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <!-- Recorremos los módulos -->
                                 @foreach ($modulos as $modulo)
                                 <tr>
                                     <td>{{ $modulo->denominacion }}</td>
@@ -158,6 +162,7 @@
                                     <td>{{ $modulo->horas }}</td>
                                     <td>{{ $modulo->formacion->siglas}}</td>
                                     @auth
+                                    <!-- comprobamos si el usuario tiene el rol de administrador -->
                                     @if(auth()->user()->roles->contains('id', 1))
                                     <td>
                                         <ul class="list-inline me-auto mb-0">
@@ -179,6 +184,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <!-- Si no hay módulos -->
                         @elseif($modulos->isEmpty() && $search != '')
                         <table id="dom-jqry" class="table table-striped table-bordered nowrap">
                             <thead>
@@ -190,6 +196,7 @@
                                     <th wire:click="doSort('horas')" class="column-tables"><x-datatable-item :sortColumn="$sortColumn" :sortDirection="$sortDirection" columnNameVar="horas" columnName="Hours" /></th>
                                     <th wire:click="doSort('formacion_siglas')" class="column-tables"><x-datatable-item :sortColumn="$sortColumn" :sortDirection="$sortDirection" columnNameVar="formacion_siglas" columnName="Formation" /></th>
                                     @auth
+                                    <!-- comprobamos si el usuario tiene el rol de administrador -->
                                     @if(auth()->user()->roles->contains('id', 1))
                                     <th>Actions</th>
                                     @endif
@@ -212,6 +219,7 @@
                         <div id="dom-jqry_wrapper" class="dataTables_wrapper dt-bootstrap5">
                             <div class="row pagination-center">
                                 <div class="col-sm-12 col-md-11">
+                                    <!-- Paginación -->
                                     {{$modulos->links()}}
                                 </div>
                             </div>
@@ -221,9 +229,6 @@
             </div>
         </div>
     </div>
-    <!--
-        AÑADIRLO A UN JS Y LINKEARLO NO DEJAR LA CHAPUZA ESTA
-    -->
     <script>
         window.addEventListener('cerrar_modal', event => {
             document.getElementById('cerrar_modal').click();

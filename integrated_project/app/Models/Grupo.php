@@ -29,6 +29,12 @@ class Grupo extends Model
         return $this->belongsTo(Formacion::class);
     }
 
+    /**
+     * Alcance de Eloquent para la búsqueda en la tabla "grupos" y su relación "formacion".
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $value El valor de búsqueda para comparar con varias columnas.
+     */
     public function scopeSearch($query, $value)
     {
         return $query->where('grupos.denominacion', 'like', '%' . $value . '%')

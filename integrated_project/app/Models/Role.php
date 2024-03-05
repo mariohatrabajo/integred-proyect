@@ -29,6 +29,12 @@ class Role extends Model
         return $this->belongsToMany(User::class, 'role_user', 'role_id', 'user_id');
     }
 
+    /**
+     * Alcance de Eloquent para la búsqueda en la tabla de roles y su relación "users".
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $value El valor de búsqueda para comparar con varias columnas.
+     */
     public function scopeSearch($query, $value)
     {
         return $query->where('roles.name', 'like', '%' . $value . '%')

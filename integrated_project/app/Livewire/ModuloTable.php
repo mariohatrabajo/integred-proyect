@@ -24,47 +24,78 @@ class ModuloTable extends Component
     public  $sortDirection = 'ASC'; /*Valor por defecto de la dirección de la tabla*/
     public  $sortColumn = 'denominacion'; /*Valor por defecto de la dirección de la tabla*/
 
-    public function doSort($column){
-        if($this->sortColumn === $column){
-            $this->sortDirection =($this->sortDirection == 'ASC') ? 'DESC' : 'ASC';
+    /**
+     * Realiza la ordenación de la tabla según la columna especificada.
+     *
+     * @param string $column Columna por la cual se realizará la ordenación.
+     */
+    public function doSort($column)
+    {
+        // Verifica si la columna de ordenación actual es la misma que la nueva
+        if ($this->sortColumn === $column) {
+            // Cambia la dirección de la ordenación si la dirección actual es 'ASC', de lo contrario, la establece en 'ASC'
+            $this->sortDirection = ($this->sortDirection == 'ASC') ? 'DESC' : 'ASC';
             return;
         }
+
+        // Establece la nueva columna de ordenación y la dirección como 'ASC'
         $this->sortColumn = $column;
-        $this -> sortDirection = 'ASC';
+        $this->sortDirection = 'ASC';
     }
 
     // Life cycle hooks
-    public function updatedPerPage(){
+    /**
+     * Hook del ciclo de vida: Se ejecuta cuando se actualiza el número de elementos por página.
+     * Reinicia la página a la primera cuando se modifica el número de elementos por página.
+     */
+    public function updatedPerPage()
+    {
         $this->resetPage();
     }
 
-    public function updatedSearch(){
-        $this->resetPage();
-    }
 
     /**
-     * Renderizamos la página con todos los datos
+     * Hook del ciclo de vida: Se ejecuta cuando se actualiza el término de búsqueda.
+     * Reinicia la página a la primera cuando se realiza una nueva búsqueda.
+     */
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+
+    /**
+     * Renderiza la página con todos los datos de módulos ordenados y paginados.
+     *
+     * @return \Illuminate\View\View
      */
     public function render()
-{
-    $modulos = Modulo::search($this->search)
-    ->when($this->sortColumn == 'formacion_siglas', function ($query) {
-        return $query->join('formacions', 'modulos.formacion_id', '=', 'formacions.id')
-            ->orderBy('formacions.siglas', $this->sortDirection)
-            ->select('modulos.*', 'formacions.siglas as formacion_siglas'); // Cambia el nombre de la columna siglas de la tabla formaciones
-    }, function ($query) {
-        return $query->orderBy($this->sortColumn, $this->sortDirection);
-    })
-    ->paginate($this->perPage);
+    {
+        // Obtiene los datos de módulos con la búsqueda y ordenación aplicadas, y los paginan según el número especificado por página.
+        $modulos = Modulo::search($this->search)
+            // Realiza una join con la tabla formacions y ordena por la columna siglas de formacions
+            ->when($this->sortColumn == 'formacion_siglas', function ($query) {
+                return $query->join('formacions', 'modulos.formacion_id', '=', 'formacions.id')
+                    ->orderBy('formacions.siglas', $this->sortDirection)
+                    ->select('modulos.*', 'formacions.siglas as formacion_siglas'); // Cambia el nombre de la columna siglas de la tabla formaciones
+            }, function ($query) {
+                // Ordena directamente por la columna y dirección especificadas
+                return $query->orderBy($this->sortColumn, $this->sortDirection);
+            })
+            ->paginate($this->perPage);
 
-    $formaciones = Formacion::all();
+        // Obtiene todos los datos de formaciones
+        $formaciones = Formacion::all();
 
-    return view('livewire.modulo-table', compact('modulos', 'formaciones'));
-}
-     /**
+        // Retorna la vista 'livewire.modulo-table' con los datos de módulos y formaciones paginados.
+        return view('livewire.modulo-table', compact('modulos', 'formaciones'));
+    }
+    /**
      * Es un hook de iniciación de la página web con todos los atributos a null, para evitar problemas de iniciación.
      */
-    public function mount(){
+    public function mount()
+    {
+        // Inicializa las propiedades con valores nulos
         $this->modulo_id = null;
         $this->curso = null;
         $this->formacion_id = null;
@@ -72,6 +103,8 @@ class ModuloTable extends Component
         $this->siglas = null;
         $this->horas = null;
         $this->especialidad = null;
+
+        // Inicializa la propiedad $modulo con una nueva instancia de Modulo
         $this->modulo = new Modulo;
     }
 
@@ -82,8 +115,9 @@ class ModuloTable extends Component
      * Si esta es null, quiere decir que se va a crear un nuevo registro, en caso de que sea distinto a null es que se va a
      * editar un registro, por lo tanto inicializamos todas nuestras variables con los datos de la BD.
      */
-    public function modal($modulo_id = null){
-        if($modulo_id != null){
+    public function modal($modulo_id = null)
+    {
+        if ($modulo_id != null) {
             $this->accion = 'Edit';
             $this->modulo = Modulo::findOrFail($modulo_id);
             $this->denominacion = $this->modulo->denominacion;
@@ -92,7 +126,7 @@ class ModuloTable extends Component
             $this->curso = $this->modulo->curso;
             $this->especialidad = $this->modulo->especialidad;
             $this->formacion_id = $this->modulo->formacion_id;
-        }else{
+        } else {
             $this->accion = 'Create';
             $this->mount();
         }
@@ -104,7 +138,8 @@ class ModuloTable extends Component
      *
      * Resetamos todas las variables con el hook de renderizado de la web y cerramos la ventana con un scrip.
      */
-    public function save(){
+    public function save()
+    {
         $this->validate();
 
         $modulo = $this->modulo;
@@ -119,18 +154,19 @@ class ModuloTable extends Component
         $this->mount();
         $this->dispatch('cerrar_modal');
     }
-   /**
+    /**
      * Sacamos el objeto modulo en función del ID, una vez hecho eso por la relacion 1 a N
      * sacamos todas las lecciones que tiene ese grupo y si la variable lecciones es distinta de null
      * las recorremos una a una y las vamos borrando, una vez eliminado todo eliminamos el modulo.
      *
      */
-    public function delete($modulo_id){
+    public function delete($modulo_id)
+    {
 
         $modulo = Modulo::find($modulo_id);
         $lecciones = $modulo->lecciones;
-        if($lecciones != null){
-            foreach($lecciones as $leccion){
+        if ($lecciones != null) {
+            foreach ($lecciones as $leccion) {
                 $leccion->delete();
             }
         }
@@ -143,16 +179,15 @@ class ModuloTable extends Component
      * Se llama con $this->validate(), porque queremos validar los atributos de este componente
      * que son los que el usuario modifica en el form.
      */
-    protected $rules=[
-        'horas'=>'required',
-        'denominacion'=>'required | max:255| min:2',
+    protected $rules = [
+        'horas' => 'required',
+        'denominacion' => 'required | max:255| min:2',
         'especialidad' => [
             'required',
             'regex:/^(secundaria|formacion profesional)$/i',
         ],
-        'siglas'=>'required',
-        'curso'=>'required | numeric',
-        'formacion_id'=>'required | integer',
+        'siglas' => 'required',
+        'curso' => 'required | numeric',
+        'formacion_id' => 'required | integer',
     ];
-
 }

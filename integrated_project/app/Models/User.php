@@ -61,6 +61,12 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
     }
 
+    /**
+     * Alcance de Eloquent para la búsqueda en la tabla de usuarios y su relación "roles".
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $value El valor de búsqueda para comparar con las columnas.
+     */
     public function scopeSearch($query, $value)
     {
         return $query->where('users.name', 'like', '%' . $value . '%')

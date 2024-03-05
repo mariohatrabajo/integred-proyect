@@ -30,7 +30,14 @@ class Modulo extends Model
         return $this->belongsTo(Formacion::class);
     }
 
-    public function scopeSearch($query, $value){
+    /**
+     * Alcance de Eloquent para la búsqueda en la tabla "modulos" y su relación "formacion".
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $value El valor de búsqueda para comparar con varias columnas.
+     */
+    public function scopeSearch($query, $value)
+    {
         return $query->where('modulos.curso', 'like', '%' . $value . '%')
             ->orWhere('modulos.especialidad', 'like', '%' . $value . '%')
             ->orWhere('modulos.denominacion', 'like', '%' . $value . '%')

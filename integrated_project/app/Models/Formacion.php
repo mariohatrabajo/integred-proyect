@@ -26,7 +26,16 @@ class Formacion extends Model
         return $this->hasMany(Grupo::class);
     }
 
-    public function scopeSearch($query, $value){
+    /**
+     * Alcance de Eloquent para la búsqueda basada en las columnas "siglas" y "denominacion".
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $value El valor de búsqueda para comparar con las columnas "siglas" y "denominacion".
+     */
+    public function scopeSearch($query, $value)
+    {
+        // Agrega una cláusula WHERE a la consulta para buscar "siglas" que contengan el valor especificado
+        // o "denominacion" que contenga el valor especificado.
         $query->where('siglas', 'like', '%' . $value . '%')
             ->orWhere('denominacion', 'like', '%' . $value . '%');
     }

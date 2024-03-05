@@ -107,6 +107,7 @@
                             </div>
                             <br>
                             @auth
+                            <!-- Si el usuario autenticado tiene el rol de administrador, muestra el botón para añadir un grupo -->
                             @if (auth()->user()->roles->contains('id', 1))
                             <div class="row">
                                 <div class="col-sm-12 col-md-12">
@@ -123,6 +124,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive dt-responsive">
+                        <!-- Si hay grupos, muestra la tabla con los grupos -->
                         @if ($grupos->isNotEmpty())
 
                         <table id="new-cons" class="display table table-striped table-hover dt-responsive nowrap" style="width: 100%">
@@ -140,6 +142,7 @@
                                         <x-datatable-item :sortColumn="$sortColumn" :sortDirection="$sortDirection" columnNameVar="formacion_denominacion" columnName="{!! trans('integrated.groups_page.formation_denomination') !!}" />
                                     </th>
                                     @auth
+                                    <!-- Si el usuario autenticado tiene el rol de administrador, muestra la columna de acciones -->
                                     @if (auth()->user()->roles->contains('id', 1))
                                     <th>  {{ trans('integrated.groups_page.actions') }}</th>
                                     @endif
@@ -147,6 +150,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <!-- Por cada grupo, muestra una fila con sus datos -->
                                 @foreach ($grupos as $grupo)
                                 <tr>
                                     <td>
@@ -165,6 +169,7 @@
                                         {{ $grupo->formacion->denominacion }}
                                     </td>
                                     @auth
+                                    <!-- Si el usuario autenticado tiene el rol de administrador, muestra los botones de editar y eliminar -->
                                     @if (auth()->user()->roles->contains('id', 1))
                                     <td>
                                         <ul class="list-inline me-auto mb-0">
@@ -188,6 +193,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <!-- Si no hay grupos, muestra un mensaje -->
                         @elseif($grupos->isEmpty() && $search != '')
                         <table id="dom-jqry" class="table table-striped table-bordered nowrap">
                             <thead>
@@ -204,6 +210,7 @@
                                         <x-datatable-item :sortColumn="$sortColumn" :sortDirection="$sortDirection" columnNameVar="formacion_denominacion" columnName="Formation denomination" />
                                     </th>
                                     @auth
+                                    <!-- Si el usuario autenticado tiene el rol de administrador, muestra la columna de acciones -->
                                     @if (auth()->user()->roles->contains('id', 1))
                                     <th>Actions</th>
                                     @endif
@@ -226,6 +233,7 @@
                         <div id="dom-jqry_wrapper" class="dataTables_wrapper dt-bootstrap5">
                             <div class="row pagination-center">
                                 <div class="col-sm-12 col-md-11">
+                                    <!-- Muestra la paginación -->
                                     {{ $grupos->links() }}
                                 </div>
                             </div>
@@ -235,9 +243,6 @@
             </div>
         </div>
     </div>
-    <!--
-        AÑADIRLO A UN JS Y LINKEARLO NO DEJAR LA CHAPUZA ESTA
-    -->
     <script>
         window.addEventListener('cerrar_modal', event => {
             document.getElementById('cerrar_modal').click();

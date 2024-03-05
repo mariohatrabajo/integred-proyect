@@ -102,6 +102,7 @@
                             </div>
                             <br>
                             @auth
+                            <!-- Comprobamos si el usuario tiene el rol de administrador -->
                             @if(auth()->user()->roles->contains('id', 1))
                             <div class="row">
                                 <div class="col-sm-12 col-md-12">
@@ -118,6 +119,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive dt-responsive">
+                        <!-- Comprobamos si hay lecciones -->
                         @if ($lecciones->isNotEmpty())
                         <table id="new-cons" class="display table table-striped table-hover dt-responsive nowrap" style="width: 100%">
                             <thead>
@@ -127,6 +129,7 @@
                                     <th wire:click="doSort('modulo_nombre')" class="column-tables"><x-datatable-item :sortColumn="$sortColumn" :sortDirection="$sortDirection" columnNameVar="modulo_nombre" columnName="{!! trans('integrated.lessons_page.column_name_module') !!}" /></th>
                                     <th wire:click="doSort('grupo_nombre')" class="column-tables"><x-datatable-item :sortColumn="$sortColumn" :sortDirection="$sortDirection" columnNameVar="grupo_nombre" columnName="{!! trans('integrated.lessons_page.column_name_group') !!}" /></th>
                                     @auth
+                                    <!-- Comprobamos si el usuario tiene el rol de administrador -->
                                     @if(auth()->user()->roles->contains('id', 1))
                                     <th>{{ trans('integrated.lessons_page.column_name_actions') }}</th>
                                     @endif
@@ -149,6 +152,7 @@
                                         {{ $leccion->grupo->denominacion }}
                                     </td>
                                     @auth
+                                    <!-- Comprobamos si el usuario tiene el rol de administrador -->
                                     @if(auth()->user()->roles->contains('id', 1))
                                     <td>
                                         <ul class="list-inline me-auto mb-0">
@@ -171,6 +175,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <!-- Si no hay lecciones -->
                         @elseif($lecciones->isEmpty() && $search != '')
                         <table id="dom-jqry" class="table table-striped table-bordered nowrap">
                             <thead>
@@ -180,6 +185,7 @@
                                     <th wire:click="doSort('modulo_nombre')" class="column-tables"><x-datatable-item :sortColumn="$sortColumn" :sortDirection="$sortDirection" columnNameVar="modulo_nombre" columnName="Module" /></th>
                                     <th wire:click="doSort('grupo_nombre')" class="column-tables"><x-datatable-item :sortColumn="$sortColumn" :sortDirection="$sortDirection" columnNameVar="grupo_nombre" columnName="Group" /></th>
                                     @auth
+                                    <!-- Comprobamos si el usuario tiene el rol de administrador -->
                                     @if(auth()->user()->roles->contains('id', 1))
                                     <th>Actions</th>
                                     @endif
@@ -202,6 +208,7 @@
                         <div id="dom-jqry_wrapper" class="dataTables_wrapper dt-bootstrap5">
                             <div class="row pagination-center">
                                 <div class="col-sm-12 col-md-11">
+                                    <!-- Paginación -->
                                     {{$lecciones->links()}}
                                 </div>
                             </div>
